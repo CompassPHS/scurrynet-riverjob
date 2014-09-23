@@ -1,6 +1,7 @@
 ﻿using Common.Logging;
 using Newtonsoft.Json;
 using River.Components.Contexts;
+using River.Components.Contexts.Converters;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -14,29 +15,34 @@ using System.Threading.Tasks;
 
 namespace River.Components
 {
-    public class River
+    public class River : Scurry.Executor.Job.Base.Job
     {
-        private RiverContext _riverContext;
-        Sources.Source _source;
-        Mouth _mouth;
-
         ILog log = Common.Logging.LogManager.GetCurrentClassLogger();
 
-        public River(RiverContext riverContext)
+        public River()
+            : base("river")
         {
-            _riverContext = riverContext;
-            _source = Sources.Source.GetSource(riverContext.Source);
-            _mouth = new Mouth(riverContext.Destination);            
+            
         }
 
-        public void Flow()
+        protected override void Execute(dynamic context)
         {
-            log.Info(string.Format("Starting river {0}", _riverContext.Name));
+            var riverContext =
+                JsonConvert.DeserializeObject<RiverContext>(context.ToString(), new SourceConverter());
+            Flow(riverContext);
+        }
+
+        public void Flow(RiverContext riverContext)
+        {
+            var _source = Sources.Source.GetSource(riverContext.Source);
+            var _mouth = new Mouth(riverContext.Destination);
+
+            log.Info(string.Format("Starting river {0}", riverContext.Name));
             Dictionary<string, object> curObj = null;
 
             try
             {
-                foreach (var rowObj in _source.GetRows(_riverContext.Source))
+                foreach (var rowObj in _source.GetRows(riverContext.Source))
                 {
                     try
                     {
@@ -57,18 +63,18 @@ namespace River.Components
                     }
                     catch (Exception e)
                     {
-                        log.Error(string.Format("Error river {0}", _riverContext.Name), e);
+                        log.Error(string.Format("Error river {0}", riverContext.Name), e);
                     }
                 }
             }
             catch (Exception e)
             {                
-                log.Error(string.Format("Error river {0}", _riverContext.Name), e);
+                log.Error(string.Format("Error river {0}", riverContext.Name), e);
             }
 
             if (curObj != null) _mouth.PushObj(curObj, true);
 
-            log.Info(string.Format("Completed river {0}", _riverContext.Name));
+            log.Info(string.Format("Completed river {0}", riverContext.Name));
         }
 
 

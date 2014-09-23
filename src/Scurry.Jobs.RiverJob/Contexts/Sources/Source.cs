@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using River.Components.Contexts.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace River.Components.Contexts.Sources
 {
     [Serializable]
     [JsonObject]
+    //[JsonConverter(typeof(SourceConverter))]
     public abstract class Source
     {
         public abstract string Type { get; }

@@ -1,0 +1,23 @@
+{
+	"name" : "TestRiverJob",
+	"queue" : {
+		"name" : "river",
+		"host" : "localhost"
+	},
+	"message" : {
+		"name" : "test",
+		"source" : {
+			"suppressNulls" : true,
+			"type" : "Database",
+			"connectionString" : "Data Source=localhost\\sql2012;Initial Catalog=Test;Integrated Security=SSPI;Persist Security Info=True;",
+			"command" : "EXEC river_GetTestData 10000, 5",
+			"commandTimeout" : 3600
+		},
+		"destination" : {
+			"url" : "http://localhost:9200",
+			"index" : "test",
+			"type" : "random",
+			"maxBulkSize" : 100
+		}
+	}
+}
