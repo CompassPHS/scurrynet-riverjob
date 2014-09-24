@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scurry.Jobs.RiverJob", "Scurry.Jobs.RiverJob\Scurry.Jobs.RiverJob.csproj", "{CD270728-A24A-4439-AB9C-A7FE6C6C9827}"
 EndProject
@@ -14,8 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{75E849
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{F89F0C61-2EB9-401A-B1A4-919DE9A67617}"
 	ProjectSection(SolutionItems) = preProject
-		..\examples\TestRiver.json = ..\examples\TestRiver.json
-		..\examples\TestRiver.sql = ..\examples\TestRiver.sql
+		..\examples\DatabaseRowMergeTestRiver.json = ..\examples\DatabaseRowMergeTestRiver.json
+		..\examples\DatabaseRowMergeTestRiver.sql = ..\examples\DatabaseRowMergeTestRiver.sql
+		DatabaseXmlTestRiver.json = DatabaseXmlTestRiver.json
+		DatabaseXmlTestRiver.sql = DatabaseXmlTestRiver.sql
 	EndProjectSection
 EndProject
 Global

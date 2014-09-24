@@ -10,11 +10,11 @@ namespace River.Components.Contexts.Sources
 {
     [Serializable]
     [JsonObject]
-    //[JsonConverter(typeof(SourceConverter))]
     public abstract class Source
     {
         public abstract string Type { get; }
 
+        public string Format { get; set; }
         public bool SuppressNulls { get; set; }
 
         protected Source()

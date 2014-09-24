@@ -9,6 +9,7 @@
 		"source" : {
 			"suppressNulls" : true,
 			"type" : "Database",
+			"format" : "RowMerge",
 			"connectionString" : "Data Source=localhost\\sql2012;Initial Catalog=Test;Integrated Security=SSPI;Persist Security Info=True;",
 			"command" : "EXEC river_GetTestData 10000, 5",
 			"commandTimeout" : 3600
