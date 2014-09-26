@@ -59,6 +59,8 @@ namespace Scurry.Jobs.RiverJob.Sources
                                     }
                                 }
                             }
+
+                            if (cur.Count > 0) o.OnNext(cur); // Last object if exists
                         }
 		        
                         o.OnCompleted();
