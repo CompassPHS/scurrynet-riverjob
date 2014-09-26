@@ -7,14 +7,18 @@
 	"message" : {
 		"name" : "test",
 		"source" : {
+            "format" : "Row",
 			"suppressNulls" : true,
 			"type" : "Database",
-			"format" : "RowMerge",
 			"connectionString" : "Data Source=localhost\\sql2012;Initial Catalog=Test;Integrated Security=SSPI;Persist Security Info=True;",
 			"command" : "EXEC river_GetTestData 10000, 5",
 			"commandTimeout" : 3600
 		},
-		"destination" : {
+        "bed" : {
+            "format" : "Row",
+            "strategy" : "Merge"
+        },
+		"mouth" : {
 			"url" : "http://localhost:9200",
 			"index" : "test",
 			"type" : "random",

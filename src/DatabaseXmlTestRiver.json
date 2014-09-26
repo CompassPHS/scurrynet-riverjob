@@ -14,6 +14,10 @@
 			"command" : "EXEC river_GetTestXmlData 10000, 5",
 			"commandTimeout" : 3600
 		},
+        "bed" : {
+            "format" : "Xml",
+            "strategy" : "Xml"
+        },
 		"destination" : {
 			"url" : "http://localhost:9200",
 			"index" : "test",

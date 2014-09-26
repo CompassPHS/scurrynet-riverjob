@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
-using River.Components.Contexts.Converters;
+using Scurry.Jobs.RiverJob.Contexts.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace River.Components.Contexts.Sources
+namespace Scurry.Jobs.RiverJob.Contexts.Sources
 {
     [Serializable]
     [JsonObject]

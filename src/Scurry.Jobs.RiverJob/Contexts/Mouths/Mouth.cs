@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace River.Components.Contexts
+namespace Scurry.Jobs.RiverJob.Contexts.Mouths
 {
     [Serializable]
     [JsonObject]
-    public class Destination
+    public class Mouth
     {
         public string Url { get; set; }
 
@@ -21,7 +21,7 @@ namespace River.Components.Contexts
 
         public Mapping Mapping { get; set; }
 
-        Destination()
+        Mouth()
         {
             MaxBulkSize = 100;
         }

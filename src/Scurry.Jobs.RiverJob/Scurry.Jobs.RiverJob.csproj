@@ -51,6 +51,18 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,18 +70,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Beds\BedFactory.cs" />
+    <Compile Include="Contexts\Beds\Bed.cs" />
     <Compile Include="Contexts\Converters\SourceConverter.cs" />
-    <Compile Include="Contexts\Destination.cs" />
+    <Compile Include="Contexts\Mouths\Mouth.cs" />
     <Compile Include="Contexts\RiverContext.cs" />
     <Compile Include="Contexts\Sources\Database.cs" />
     <Compile Include="Contexts\Sources\FlatFile.cs" />
     <Compile Include="Contexts\Sources\Source.cs" />
-    <Compile Include="Mouth.cs" />
+    <Compile Include="Mouths\Mouth.cs" />
+    <Compile Include="Mouths\MouthFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="River.cs" />
     <Compile Include="Sources\Database.cs" />
     <Compile Include="Sources\FlatFile.cs" />
     <Compile Include="Sources\Source.cs" />
+    <Compile Include="Beds\Merge.cs" />
+    <Compile Include="Beds\Bed.cs" />
+    <Compile Include="Sources\SourceFactory.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

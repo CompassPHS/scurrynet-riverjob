@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace River.Components.Contexts.Sources
+namespace Scurry.Jobs.RiverJob.Contexts.Sources
 {
     [Serializable]
     [JsonObject]

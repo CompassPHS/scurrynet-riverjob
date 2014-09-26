@@ -1,6 +1,7 @@
 ﻿using Common.Logging;
 using Newtonsoft.Json;
-using River.Components.Contexts;
+using Newtonsoft.Json.Linq;
+using Scurry.Jobs.RiverJob.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,46 +13,31 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace River.Components
+namespace Scurry.Jobs.RiverJob.Mouths
 {
     public class Mouth
     {
         ILog log = Common.Logging.LogManager.GetCurrentClassLogger();
 
-        Contexts.Destination _destination;
+        Contexts.Mouths.Mouth _destination;
         Nest.ElasticClient _client;
-
-        public Mouth(Contexts.Destination destination)
+        bool _indexCreated = false;
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        int start = System.Environment.TickCount;
+        
+        public Mouth(Contexts.Mouths.Mouth destination)
         {
             _destination = destination;
             _client = new Nest.ElasticClient(new Nest.ConnectionSettings(new Uri(destination.Url)));
         }
 
-        private void BulkPushToElasticsearch(string body)
+        public void Collect(JObject curObj)
         {
-            var connectionStatus = _client.Raw.BulkPut(_destination.Index
-                , _destination.Type
-                , body
-                , null);
-
-            if (connectionStatus.Success)
-            {
-                log.Debug(connectionStatus);
-                log.Info(string.Format("Result:{0}", connectionStatus.Success));
-            }
-            else
-            {
-                log.Error(connectionStatus.ServerError.Error);
-            }
+            Collect(curObj, false);
         }
 
-        StringBuilder sb = new StringBuilder();
-        int count = 0;
-        int start = System.Environment.TickCount;
-
-        bool _indexCreated = false;
-
-        public void PushObj(Dictionary<string, object> curObj, bool pushNow)
+        public void Collect(JObject curObj, bool expelNow)
         {
             if (!_indexCreated) EagerCreateIndex(_destination);
 
@@ -59,11 +45,12 @@ namespace River.Components
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
+
             var index = _destination.Index;
             var type = _destination.Type;
             sb.Append("{ \"index\" : { \"_index\" : \"" + index + "\", \"_type\" : \"" + type + "\"");
-            if (curObj.ContainsKey("_id")) sb.Append(", \"_id\" : \"" + curObj["_id"] + "\"");
-            if (curObj.ContainsKey("_parent")) sb.Append(", \"_parent\" : \"" + curObj["_parent"] + "\"");
+            if (curObj["_id"] != null) sb.Append(", \"_id\" : \"" + curObj["_id"] + "\"");
+            if (curObj["_parent"] != null) sb.Append(", \"_parent\" : \"" + curObj["_parent"] + "\"");
             sb.Append(" } }");
             sb.Append("\n");
             sb.Append(JsonConvert.SerializeObject(curObj, settings));
@@ -71,16 +58,22 @@ namespace River.Components
 
             count++;
 
-            if (pushNow || count % _destination.MaxBulkSize == 0)
+            if (expelNow || count % _destination.MaxBulkSize == 0)
             {
-                BulkPushToElasticsearch(sb.ToString());
-                sb.Clear();
-                var end = System.Environment.TickCount;
-                log.Info(string.Format("{0} has taken {1}s", count, (end - start) / 1000));
+                Expel();
             }
         }
 
-        private void EagerCreateIndex(Destination destination)
+        public void Expel()
+        {
+            // Send the current state on regardless
+            BulkPushToElasticsearch(sb.ToString());
+            sb.Clear();
+            var end = System.Environment.TickCount;
+            log.Info(string.Format("{0} has taken {1}s", count, (end - start) / 1000));
+        }
+
+        private void EagerCreateIndex(Contexts.Mouths.Mouth destination)
         {
             try
             {
@@ -109,6 +102,24 @@ namespace River.Components
             {
                 log.Error(ex);
                 throw;
+            }
+        }
+
+        private void BulkPushToElasticsearch(string body)
+        {
+            var connectionStatus = _client.Raw.BulkPut(_destination.Index
+                , _destination.Type
+                , body
+                , null);
+
+            if (connectionStatus.Success)
+            {
+                log.Debug(connectionStatus);
+                log.Info(string.Format("Result:{0}", connectionStatus.Success));
+            }
+            else
+            {
+                log.Error(connectionStatus.ServerError.Error);
             }
         }
     }

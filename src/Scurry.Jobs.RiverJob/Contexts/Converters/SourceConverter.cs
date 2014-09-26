@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using River.Components.Contexts.Sources;
+using Scurry.Jobs.RiverJob.Contexts.Sources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace River.Components.Contexts.Converters
+namespace Scurry.Jobs.RiverJob.Contexts.Converters
 {
     public class SourceConverter : JsonConverter
     {

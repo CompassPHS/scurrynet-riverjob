@@ -2,44 +2,82 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace River.Components.Sources
+namespace Scurry.Jobs.RiverJob.Sources
 {
     public class Database : Source
     {
-        public override IEnumerable<Dictionary<string, object>> GetRows(Contexts.Sources.Source source)
+        protected Contexts.Sources.Database Context { get; set; }
+
+        public Database(Contexts.Sources.Database context)
+            : base()
         {
-            var context = source as Contexts.Sources.Database;
+            Context = context;
+        }
 
-            using (var connection = new SqlConnection(context.ConnectionString))
+        public override IObservable<object> Read()
+        {
+            switch (Context.Format)
             {
-                connection.Open();
-
-                using (var cmd = new SqlCommand(context.Command, connection))
-                {
-                    cmd.CommandTimeout = context.CommandTimeout;
-
-                    using (var reader = cmd.ExecuteReader())
+                case "Row":
+                    return Observable.Create<List<Dictionary<string, object>>>(o =>
                     {
-                        while (reader.Read())
+                        using (var connection = new SqlConnection(Context.ConnectionString))
                         {
-                            var rowObj = new Dictionary<string, object>();
+                            var cur = new List<Dictionary<string, object>>();
+                            string id = null;
+                            connection.Open();
 
-                            for (int i = 0; i < reader.FieldCount; i++)
+                            using (var cmd = new SqlCommand(Context.Command, connection))
                             {
-                                var data = reader[i];
+                                cmd.CommandTimeout = Context.CommandTimeout;
 
-                                if (context.SuppressNulls && data == DBNull.Value) continue;
+                                using (var reader = cmd.ExecuteReader())
+                                {
+                                    while (reader.Read())
+                                    {
+                                        var row = new Dictionary<string, object>();
 
-                                ParseColumn(reader.GetName(i), data, rowObj);
+                                        for (int i = 0; i < reader.FieldCount; i++)
+                                        {
+                                            var data = reader[i];
+
+                                            if (Context.SuppressNulls && data == DBNull.Value) continue;
+
+                                            ParseColumn(reader.GetName(i), data, row);
+                                        }
+
+                                        if (row.ContainsKey("_id") && row["_id"].ToString() != id)
+                                        {
+                                            if (cur.Count > 0) o.OnNext(cur);
+                                            cur = new List<Dictionary<string, object>>();
+                                            cur.Add(row);
+                                            if (row.ContainsKey("_id"))
+                                                id = row["_id"].ToString();
+                                            else
+                                                id = null;
+                                        }
+                                        else
+                                        {
+                                            cur.Add(row);
+                                        }
+                                    }
+
+                                    if (cur.Count > 0) o.OnNext(cur); // Last object if exists
+                                }
                             }
-
-                            yield return rowObj;
                         }
-                    }
-                }
+
+                        o.OnCompleted();
+                        return Disposable.Empty;
+                    });
+                default:
+                    throw new ArgumentException(
+                        string.Format("Format {0} not supported by Database source", Context.Format));
             }
         }
 
