@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Beds\BedFactory.cs" />
+    <Compile Include="Beds\Xml.cs" />
     <Compile Include="Contexts\Beds\Bed.cs" />
     <Compile Include="Contexts\Converters\SourceConverter.cs" />
     <Compile Include="Contexts\Mouths\Mouth.cs" />

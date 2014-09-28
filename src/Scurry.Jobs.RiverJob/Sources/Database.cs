@@ -6,6 +6,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Scurry.Jobs.RiverJob.Sources
 {
@@ -74,6 +75,38 @@ namespace Scurry.Jobs.RiverJob.Sources
 
                         o.OnCompleted();
                         return Disposable.Empty;
+                    });
+                case "Xml":
+                    return Observable.Create<XmlNode>(o =>
+                    {
+                        using (var connection = new SqlConnection(Context.ConnectionString))
+                        {
+                            connection.Open();
+
+                            using (var cmd = new SqlCommand(Context.Command, connection))
+                            {
+                                cmd.CommandTimeout = Context.CommandTimeout;
+
+                                using (var reader = cmd.ExecuteXmlReader())
+                                {
+                                    while (reader.Read())
+                                    {
+                                        var doc = new XmlDocument();
+                                        doc.Load(reader);
+                                        var objs = doc.SelectNodes("/index/type");
+
+                                        foreach (XmlNode obj in objs)
+                                        {
+                                            o.OnNext(obj);
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            o.OnCompleted();
+                            return Disposable.Empty;
+                        }
                     });
                 default:
                     throw new ArgumentException(

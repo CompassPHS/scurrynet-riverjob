@@ -11,17 +11,17 @@
 			"type" : "Database",
 			"format" : "Xml",
 			"connectionString" : "Data Source=localhost\\sql2012;Initial Catalog=Test;Integrated Security=SSPI;Persist Security Info=True;",
-			"command" : "EXEC river_GetTestXmlData 10000, 5",
+			"command" : "EXEC river_GetXmlTestData 10000, 5",
 			"commandTimeout" : 3600
 		},
         "bed" : {
             "format" : "Xml",
             "strategy" : "Xml"
         },
-		"destination" : {
+		"mouth" : {
 			"url" : "http://localhost:9200",
 			"index" : "test",
-			"type" : "random",
+			"type" : "randomxml",
 			"maxBulkSize" : 100
 		}
 	}

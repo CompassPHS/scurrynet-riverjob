@@ -22,11 +22,6 @@ namespace Scurry.Jobs.RiverJob.Beds
             return Observable.Return<object>(Processing(obj));
         }
 
-        public override IObservable<JObject> Convert(object obj)
-        {
-            return Observable.Return<JObject>(JObject.FromObject(obj));
-        }
-
         private object Processing(object obj)
         {
             switch(Context.Format)

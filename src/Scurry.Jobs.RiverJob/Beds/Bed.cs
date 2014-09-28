@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,6 +30,10 @@ namespace Scurry.Jobs.RiverJob.Beds
         public Func<object, IObservable<object>> Processor { get; private set; }
         public abstract IObservable<object> Process(object obj);
         public Func<object, IObservable<JObject>> Converter { get; private set; }
-        public abstract IObservable<JObject> Convert(object obj);
+        
+        public IObservable<JObject> Convert(object obj)
+        {
+            return Observable.Return<JObject>(JObject.FromObject(obj));
+        }
     }
 }

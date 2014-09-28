@@ -1,0 +1,47 @@
+{
+	"randomxml" : {
+		"properties" : {
+			"allowed" : {
+				"type" : "long"
+			},
+			"amount" : {
+				"type" : "long"
+			},
+			"codes" : {
+				"type" : "string"
+			},
+			"createDate" : {
+				"type" : "date",
+				"format" : "dateOptionalTime"
+			},
+			"descs" : {
+				"type" : "string"
+			},
+			"groups" : {
+				"properties" : {
+					"_id" : {
+						"type" : "long"
+					},
+					"code" : {
+						"type" : "string"
+					},
+					"desc" : {
+						"type" : "string"
+					}
+				}
+			},
+			"isActive" : {
+				"type" : "boolean"
+			},
+			"keys" : {
+				"type" : "long"
+			},
+			"longDescs" : {
+				"type" : "string"
+			},
+			"totals" : {
+				"type" : "long"
+			}
+		}
+	}
+}

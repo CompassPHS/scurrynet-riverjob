@@ -14,6 +14,8 @@ namespace Scurry.Jobs.RiverJob.Beds
             {
                 case "Merge":
                     return new Merge(bed);
+                case "Xml":
+                    return new Xml(bed);
                 default:
                     throw new ArgumentException();
             }

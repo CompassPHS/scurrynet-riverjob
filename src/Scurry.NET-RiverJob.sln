@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scurry.Jobs.RiverJob", "Scurry.Jobs.RiverJob\Scurry.Jobs.RiverJob.csproj", "{CD270728-A24A-4439-AB9C-A7FE6C6C9827}"
 EndProject
@@ -13,11 +13,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{75E849
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{F89F0C61-2EB9-401A-B1A4-919DE9A67617}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RowMerge", "RowMerge", "{11729924-A54C-4F64-91F9-3EEEE2CB7B0D}"
 	ProjectSection(SolutionItems) = preProject
-		..\examples\DatabaseRowMergeTestRiver.json = ..\examples\DatabaseRowMergeTestRiver.json
-		..\examples\DatabaseRowMergeTestRiver.sql = ..\examples\DatabaseRowMergeTestRiver.sql
-		DatabaseXmlTestRiver.json = DatabaseXmlTestRiver.json
-		DatabaseXmlTestRiver.sql = DatabaseXmlTestRiver.sql
+		..\examples\RowMerge\DatabaseRowMergeTestRiver.json = ..\examples\RowMerge\DatabaseRowMergeTestRiver.json
+		..\examples\RowMerge\DatabaseRowMergeTestRiver.sql = ..\examples\RowMerge\DatabaseRowMergeTestRiver.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Xml", "Xml", "{ED959959-EB2E-4A61-8671-E7A8B27FAF83}"
+	ProjectSection(SolutionItems) = preProject
+		..\examples\Xml\DatabaseXmlTestRiver.json = ..\examples\Xml\DatabaseXmlTestRiver.json
+		..\examples\Xml\DatabaseXmlTestRiver.sql = ..\examples\Xml\DatabaseXmlTestRiver.sql
+		..\examples\Xml\ESRandomXmlMapping.bat = ..\examples\Xml\ESRandomXmlMapping.bat
+		..\examples\Xml\RandomXmlMapping.json = ..\examples\Xml\RandomXmlMapping.json
 	EndProjectSection
 EndProject
 Global
@@ -33,5 +41,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{11729924-A54C-4F64-91F9-3EEEE2CB7B0D} = {F89F0C61-2EB9-401A-B1A4-919DE9A67617}
+		{ED959959-EB2E-4A61-8671-E7A8B27FAF83} = {F89F0C61-2EB9-401A-B1A4-919DE9A67617}
 	EndGlobalSection
 EndGlobal

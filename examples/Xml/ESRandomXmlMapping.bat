@@ -1,0 +1,2 @@
+curl.exe -X PUT -H "Content-Type: application/json" http://localhost:9200/test
+curl.exe -X PUT -H "Content-Type: application/json" -d "@RandomXmlMapping.json" http://localhost:9200/test/randomxml/_mapping
