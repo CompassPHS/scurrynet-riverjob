@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -82,17 +83,26 @@ namespace Scurry.Jobs.RiverJob.Sources
                         using (var connection = new SqlConnection(Context.ConnectionString))
                         {
                             connection.Open();
+                            var more = true;
 
-                            using (var cmd = new SqlCommand(Context.Command, connection))
+                            while (more)
                             {
-                                cmd.CommandTimeout = Context.CommandTimeout;
-
-                                using (var reader = cmd.ExecuteXmlReader())
+                                using (var cmd = new SqlCommand(Context.Command, connection))
                                 {
-                                    while (reader.Read())
+                                    cmd.CommandTimeout = Context.CommandTimeout;
+
+                                    using (var reader = cmd.ExecuteReader())
                                     {
+                                        StringBuilder sb = new StringBuilder(string.Empty);
+
+                                        while (reader.Read())
+                                        {
+                                            sb.Append(reader.GetString(0));
+                                        }
+
                                         var doc = new XmlDocument();
-                                        doc.Load(reader);
+                                        TextReader xmlTextReader = new StringReader(sb.ToString());
+                                        doc.Load(xmlTextReader);
                                         var objs = doc.SelectNodes("/index/type");
 
                                         foreach (XmlNode obj in objs)
@@ -100,6 +110,16 @@ namespace Scurry.Jobs.RiverJob.Sources
                                             o.OnNext(obj);
                                         }
 
+                                        // More results?
+                                        more = false;
+
+                                        if (reader.NextResult())
+                                        {
+                                            if (reader.Read())
+                                            {
+                                                more = reader.GetBoolean(0);
+                                            }
+                                        }
                                     }
                                 }
                             }
