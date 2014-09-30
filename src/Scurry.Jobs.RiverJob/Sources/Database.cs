@@ -8,6 +8,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Scurry.Jobs.RiverJob.Sources
 {
@@ -78,7 +79,7 @@ namespace Scurry.Jobs.RiverJob.Sources
                         return Disposable.Empty;
                     });
                 case "Xml":
-                    return Observable.Create<XmlNode>(o =>
+                    return Observable.Create<XPathNavigator>(o =>
                     {
                         using (var connection = new SqlConnection(Context.ConnectionString))
                         {
@@ -93,31 +94,47 @@ namespace Scurry.Jobs.RiverJob.Sources
 
                                     using (var reader = cmd.ExecuteReader())
                                     {
-                                        StringBuilder sb = new StringBuilder(string.Empty);
+                                        StringBuilder xmlschema = new StringBuilder(string.Empty);
 
                                         while (reader.Read())
                                         {
-                                            sb.Append(reader.GetString(0));
+                                            xmlschema.Append(reader.GetString(0));
                                         }
 
-                                        var doc = new XmlDocument();
-                                        TextReader xmlTextReader = new StringReader(sb.ToString());
-                                        doc.Load(xmlTextReader);
-                                        var objs = doc.SelectNodes("/index/type");
-
-                                        foreach (XmlNode obj in objs)
-                                        {
-                                            o.OnNext(obj);
-                                        }
-
-                                        // More results?
-                                        more = false;
+                                        XmlReader schemaReader = XmlReader.Create(new StringReader(xmlschema.ToString()));
+                                        var settings = new XmlReaderSettings();
+                                        settings.Schemas.Add(null, schemaReader);
+                                        settings.ValidationType = ValidationType.Schema;
 
                                         if (reader.NextResult())
                                         {
-                                            if (reader.Read())
+                                            StringBuilder xmlsb = new StringBuilder(string.Empty);
+
+                                            while (reader.Read())
                                             {
-                                                more = reader.GetBoolean(0);
+                                                xmlsb.Append(reader.GetString(0));
+                                            }
+
+                                            var doc = new XmlDocument();
+                                            XmlReader xmlReader = XmlReader.Create(new StringReader(xmlsb.ToString()), settings);
+                                            doc.Load(xmlReader);
+                                            var nav = doc.CreateNavigator();
+                                            var objs = nav.Select("/index/type");
+
+                                            foreach (XPathNavigator obj in objs)
+                                            {
+                                                o.OnNext(obj);
+                                            }
+
+                                            // More results?
+                                            more = false;
+
+                                            if (reader.NextResult())
+                                            {
+                                                if (reader.Read())
+                                                {
+                                                    more = reader.GetBoolean(0);
+                                                }
                                             }
                                         }
                                     }
