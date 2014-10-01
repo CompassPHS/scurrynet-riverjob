@@ -8,14 +8,14 @@ namespace Scurry.Jobs.RiverJob.Beds
 {
     public static class BedFactory
     {
-        public static Bed Get(Contexts.Beds.Bed bed)
+        public static Bed Get(Contexts.RiverContext context)
         {
-            switch (bed.Strategy)
+            switch (context.Bed.Strategy)
             {
                 case "Merge":
-                    return new Merge(bed);
+                    return new Merge(context);
                 case "Xml":
-                    return new Xml(bed);
+                    return new Xml(context);
                 default:
                     throw new ArgumentException();
             }

@@ -44,7 +44,7 @@ namespace Scurry.Jobs.RiverJob
 
                 var reset = new AutoResetEvent(false);
                 var source = Sources.SourceFactory.Get(riverContext.Source);
-                var bed = Beds.BedFactory.Get(riverContext.Bed);
+                var bed = Beds.BedFactory.Get(riverContext);
                 var mouth = Mouths.MouthFactory.Get(riverContext.Mouth);
 
                 var flow = from iObj in source.Read()

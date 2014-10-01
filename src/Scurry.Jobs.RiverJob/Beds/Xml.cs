@@ -13,8 +13,8 @@ namespace Scurry.Jobs.RiverJob.Beds
 {
     public class Xml : Bed
     {
-        public Xml(Contexts.Beds.Bed bed)
-            : base(bed)
+        public Xml(Contexts.RiverContext context)
+            : base(context)
         {
 
         }
@@ -26,23 +26,23 @@ namespace Scurry.Jobs.RiverJob.Beds
 
         private object Processing(object obj)
         {
-            switch (Context.Format)
+            switch (Context.Bed.Format)
             {
                 case "Xml":
                     var xml = obj as XPathNavigator;
 
                     if (xml == null)
                         throw new ArgumentException(
-                            "Could not convert input object to XmlDocument");
+                            "Could not convert input object to XPathNavigator");
 
                     return ProcessXml(xml);
                 default:
                     throw new ArgumentException(
-                        string.Format("Format {0} not supported by xml bed", Context.Format));
+                        string.Format("Format {0} not supported by xml bed", Context.Bed.Format));
             }
         }
 
-        static Dictionary<string, object> ProcessXml(XPathNavigator xml)
+        private Dictionary<string, object> ProcessXml(XPathNavigator xml)
         {
             var cur = new Dictionary<string, object>();
 
@@ -54,7 +54,7 @@ namespace Scurry.Jobs.RiverJob.Beds
             return cur;
         }
 
-        static void Process(XPathNavigator xml, Dictionary<string, object> parent)
+        private void Process(XPathNavigator xml, Dictionary<string, object> parent)
         {
             XPathNodeIterator iter = null;
 
@@ -84,7 +84,8 @@ namespace Scurry.Jobs.RiverJob.Beds
 
                 foreach (XPathNavigator child in xml.SelectChildren(XPathNodeType.Element))
                 {
-                    lst.Add(child.TypedValue);
+                    if (!Context.Source.SuppressNulls || child.TypedValue != null)
+                        lst.Add(child.TypedValue);
                 }
 
                 parent.Add(xml.Name, lst);
@@ -118,7 +119,8 @@ namespace Scurry.Jobs.RiverJob.Beds
             else if (xml.HasChildren
                 && xml.SelectChildren(XPathNodeType.Text).Count == 1)
             {
-                parent.Add(xml.Name, xml.TypedValue);
+                if (!Context.Source.SuppressNulls || xml.TypedValue != null)
+                    parent.Add(xml.Name, xml.TypedValue);
             }
         }
     }

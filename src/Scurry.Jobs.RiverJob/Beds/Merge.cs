@@ -11,8 +11,8 @@ namespace Scurry.Jobs.RiverJob.Beds
 {
     public class Merge : Bed
     {
-        public Merge(Contexts.Beds.Bed bed)
-            : base(bed)
+        public Merge(Contexts.RiverContext context)
+            : base(context)
         {
 
         }
@@ -24,7 +24,7 @@ namespace Scurry.Jobs.RiverJob.Beds
 
         private object Processing(object obj)
         {
-            switch(Context.Format)
+            switch(Context.Bed.Format)
             {
                 case "Row":
                     var srcLst = obj as List<Dictionary<string, object>>;
@@ -43,7 +43,7 @@ namespace Scurry.Jobs.RiverJob.Beds
                     return dest;
                 default:
                     throw new ArgumentException(
-                        string.Format("Format {0} not supported by merge bed", Context.Format));
+                        string.Format("Format {0} not supported by merge bed", Context.Bed.Format));
             }
         }
 

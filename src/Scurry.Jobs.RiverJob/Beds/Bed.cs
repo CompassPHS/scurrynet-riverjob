@@ -10,11 +10,11 @@ namespace Scurry.Jobs.RiverJob.Beds
 {
     public abstract class Bed
     {
-        public Contexts.Beds.Bed Context { get; private set; }
+        public Contexts.RiverContext Context { get; private set; }
 
-        public Bed(Contexts.Beds.Bed bed)
+        public Bed(Contexts.RiverContext context)
         {
-            Context = bed;
+            Context = context;
 
             Processor = obj =>
             {
