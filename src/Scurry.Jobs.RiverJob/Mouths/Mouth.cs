@@ -67,7 +67,8 @@ namespace Scurry.Jobs.RiverJob.Mouths
         public void Expel()
         {
             // Send the current state on regardless
-            BulkPushToElasticsearch(sb.ToString());
+            if (!string.IsNullOrWhiteSpace(sb.ToString()))
+                BulkPushToElasticsearch(sb.ToString()); // Only push if there's something there!
             sb.Clear();
             var end = System.Environment.TickCount;
             log.Info(string.Format("{0} has taken {1}s", count, (end - start) / 1000));

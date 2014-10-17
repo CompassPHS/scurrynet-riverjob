@@ -101,10 +101,14 @@ namespace Scurry.Jobs.RiverJob.Sources
                                             xmlschema.Append(reader.GetString(0));
                                         }
 
-                                        XmlReader schemaReader = XmlReader.Create(new StringReader(xmlschema.ToString()));
                                         var settings = new XmlReaderSettings();
-                                        settings.Schemas.Add(null, schemaReader);
-                                        settings.ValidationType = ValidationType.Schema;
+
+                                        if (!string.IsNullOrWhiteSpace(xmlschema.ToString()))
+                                        {
+                                            XmlReader schemaReader = XmlReader.Create(new StringReader(xmlschema.ToString()));
+                                            settings.Schemas.Add(null, schemaReader);
+                                            settings.ValidationType = ValidationType.Schema;
+                                        }
 
                                         if (reader.NextResult())
                                         {
@@ -113,6 +117,13 @@ namespace Scurry.Jobs.RiverJob.Sources
                                             while (reader.Read())
                                             {
                                                 xmlsb.Append(reader.GetString(0));
+                                            }
+
+                                            if (string.IsNullOrWhiteSpace(xmlsb.ToString()))
+                                            {
+                                                // Short circuit completion if empty set
+                                                o.OnCompleted();
+                                                return Disposable.Empty;
                                             }
 
                                             var doc = new XmlDocument();
