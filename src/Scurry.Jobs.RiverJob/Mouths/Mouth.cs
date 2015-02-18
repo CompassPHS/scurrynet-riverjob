@@ -81,7 +81,14 @@ namespace Scurry.Jobs.RiverJob.Mouths
             {
                 if (destination.DeleteExisting)
                     _client.DeleteMapping(new DeleteMappingRequest(destination.Index, destination.Type));
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
 
+            try
+            {
                 var index = _client.CreateIndex(c => c
                     .Index(destination.Index)
                     .InitializeUsing(new Nest.IndexSettings())
