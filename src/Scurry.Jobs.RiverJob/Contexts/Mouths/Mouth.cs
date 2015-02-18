@@ -21,9 +21,12 @@ namespace Scurry.Jobs.RiverJob.Contexts.Mouths
 
         public Mapping Mapping { get; set; }
 
+        public bool DeleteExisting { get; set; }
+
         Mouth()
         {
             MaxBulkSize = 100;
+            DeleteExisting = false;
         }
     }   
 

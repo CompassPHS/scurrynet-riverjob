@@ -1,4 +1,5 @@
 ﻿using Common.Logging;
+using Nest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Scurry.Jobs.RiverJob.Contexts;
@@ -76,6 +77,16 @@ namespace Scurry.Jobs.RiverJob.Mouths
 
         private void EagerCreateIndex(Contexts.Mouths.Mouth destination)
         {
+            try
+            {
+                if (destination.DeleteExisting)
+                    _client.DeleteMapping(new DeleteMappingRequest(destination.Index, destination.Type));
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
+
             try
             {
                 var index = _client.CreateIndex(c => c
