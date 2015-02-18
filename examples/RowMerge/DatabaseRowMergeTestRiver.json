@@ -21,6 +21,7 @@
 		"mouth" : {
 			"url" : "http://localhost:9200",
 			"index" : "test",
+			"deleteExisting":true,
 			"type" : "random",
 			"maxBulkSize" : 100
 		}
