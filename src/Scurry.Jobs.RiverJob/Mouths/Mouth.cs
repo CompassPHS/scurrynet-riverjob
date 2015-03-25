@@ -77,10 +77,21 @@ namespace Scurry.Jobs.RiverJob.Mouths
 
         private void EagerCreateIndex(Contexts.Mouths.Mouth destination)
         {
+            IGetMappingResponse mapping = null;
+
             try
             {
                 if (destination.DeleteExisting)
+                {
+                    // Get previous mapping
+                    mapping = _client.GetMapping<object>(m =>
+                        {
+                            m.Index(destination.Index);
+                            m.Type(destination.Type);
+                            return m;
+                        });
                     _client.DeleteMapping(new DeleteMappingRequest(destination.Index, destination.Type));
+                }
             }
             catch (Exception ex)
             {
@@ -96,18 +107,36 @@ namespace Scurry.Jobs.RiverJob.Mouths
 
                 _indexCreated = true;
 
-                if (destination.Mapping != null)
+                if (mapping != null)
                 {
+                    // Use previous mapping to create mapping for new index
+                    log.Info("Adding previously pulled mapping");
                     _client.Map<object>(m =>
                     {
+                        m.InitializeUsing(mapping.Mapping);
+
                         m.Index(destination.Index);
                         m.Type(destination.Type);
 
-                        if (destination.Mapping.Parent != null)
-                            m.SetParent(destination.Mapping.Parent.Type);
-
                         return m;
                     });
+                }
+                else
+                {
+                    // Process parent mapping as normal for type creation
+                    if (destination.Mapping != null)
+                    {
+                        _client.Map<object>(m =>
+                        {
+                            m.Index(destination.Index);
+                            m.Type(destination.Type);
+
+                            if (destination.Mapping.Parent != null)
+                                m.SetParent(destination.Mapping.Parent.Type);
+
+                            return m;
+                        });
+                    }
                 }
             }
             catch (Exception ex)
