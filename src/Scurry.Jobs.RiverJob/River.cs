@@ -61,6 +61,7 @@ namespace Scurry.Jobs.RiverJob
                     },
                     ex =>
                     {
+                        log.ErrorFormat("Error while processing river: {0}", ex);
                         throw new ApplicationException("Error while processing river", ex);
                     },
                     () =>
