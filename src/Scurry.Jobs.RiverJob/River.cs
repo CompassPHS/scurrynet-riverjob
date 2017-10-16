@@ -29,7 +29,7 @@ namespace Scurry.Jobs.RiverJob
             
         }
 
-        protected override void Execute(dynamic context)
+        public override void Execute(dynamic context)
         {
             var riverContext =
                 JsonConvert.DeserializeObject<RiverContext>(context.ToString(), new SourceConverter());
